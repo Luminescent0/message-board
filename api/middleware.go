@@ -6,8 +6,8 @@ import (
 )
 
 func auth(ctx *gin.Context) {
-	username, exist := ctx.Get("username")
-	if !exist {
+	username, err := ctx.Cookie("username")
+	if err != nil {
 		tool.RespErrorWithDate(ctx, "请登陆后进行操作")
 		ctx.Abort()
 	}
