@@ -5,14 +5,12 @@ import "github.com/gin-gonic/gin"
 func InitEngine() {
 	engine := gin.Default()
 
+	engine.POST("/register", register) //注册
+	engine.POST("/login", login)       //登陆
+
 	userGroup := engine.Group("/user")
 	{
-		userGroup.POST("/register", register) //注册
-		userGroup.POST("/login", login)       //登陆
-		userGroup.POST("/password")           //修改密码
-
-		userGroup.POST("/info") //修改个人信息
-		userGroup.GET("/info")  //查看个人信息
+		userGroup.POST("/password") //修改密码
 	}
 
 	postGroup := engine.Group("/post")
