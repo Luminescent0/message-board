@@ -26,7 +26,8 @@ func InitEngine() {
 
 	commentGroup := engine.Group("/comment")
 	{
-		commentGroup.POST("/")              //发送评论
+		commentGroup.Use(auth)
+		commentGroup.POST("/", addComment)  //发送评论
 		commentGroup.DELETE("/:comment_id") //删除评论
 	}
 
