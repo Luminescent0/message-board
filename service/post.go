@@ -9,3 +9,7 @@ func AddPost(post model.Post) error {
 	err := dao.InsertPost(post)
 	return err
 }
+
+func GetPosts() ([]model.Post, error) {
+	return dao.SelectPosts()
+}
