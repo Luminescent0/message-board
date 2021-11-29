@@ -6,11 +6,12 @@ import (
 )
 
 func auth(ctx *gin.Context) {
-	_, exist := ctx.Get("username")
+	username, exist := ctx.Get("username")
 	if !exist {
 		tool.RespErrorWithDate(ctx, "请登陆后进行操作")
 		ctx.Abort()
 	}
 
+	ctx.Set("username", username)
 	ctx.Next()
 }
