@@ -10,3 +10,8 @@ type Post struct {
 	PostTime   time.Time `json:"post_time"`
 	UpdateTime time.Time `json:"update_time"`
 }
+
+type PostDetail struct {
+	Post
+	Comments []Comment
+}

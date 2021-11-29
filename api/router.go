@@ -20,8 +20,8 @@ func InitEngine() {
 		postGroup.POST("/", addPost) //发布新留言
 		postGroup.POST("/:post_id")  //修改留言
 
-		postGroup.GET("/", briefPosts) //查看全部留言概略
-		postGroup.GET("/:post_id")     //查看一条留言详细信息和其下属评论
+		postGroup.GET("/", briefPosts)         //查看全部留言概略
+		postGroup.GET("/:post_id", postDetail) //查看一条留言详细信息和其下属评论
 	}
 
 	commentGroup := engine.Group("/comment")
