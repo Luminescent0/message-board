@@ -8,7 +8,7 @@ func InitEngine() {
 	userGroup := engine.Group("/user")
 	{
 		userGroup.POST("/register", register) //注册
-		userGroup.POST("/login")              //登陆
+		userGroup.POST("/login", login)       //登陆
 		userGroup.POST("/password")           //修改密码
 
 		userGroup.POST("/info") //修改个人信息

@@ -8,6 +8,26 @@ import (
 	"message-board/tool"
 )
 
+func login(ctx *gin.Context) {
+	username := ctx.PostForm("username")
+	password := ctx.PostForm("password")
+
+	flag, err := service.IsPasswordCorrect(username, password)
+	if err != nil {
+		fmt.Println("judge password correct err: ", err)
+		tool.RespInternalError(ctx)
+		return
+	}
+
+	if !flag {
+		tool.RespErrorWithDate(ctx, "密码错误")
+		return
+	}
+
+	ctx.SetCookie("username", username, 600, "/", "", false, false)
+	tool.RespSuccessful(ctx)
+}
+
 func register(ctx *gin.Context) {
 	username := ctx.PostForm("username")
 	password := ctx.PostForm("password")
