@@ -6,6 +6,11 @@ import (
 	"message-board/model"
 )
 
+func ChangePassword(username, newPassword string) error {
+	err := dao.UpdatePassword(username, newPassword)
+	return err
+}
+
 func IsPasswordCorrect(username, password string) (bool, error) {
 	user, err := dao.SelectUserByUsername(username)
 	if err != nil {

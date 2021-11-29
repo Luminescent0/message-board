@@ -10,7 +10,8 @@ func InitEngine() {
 
 	userGroup := engine.Group("/user")
 	{
-		userGroup.POST("/password") //修改密码
+		userGroup.Use(auth)
+		userGroup.POST("/password", changePassword) //修改密码
 	}
 
 	postGroup := engine.Group("/post")
