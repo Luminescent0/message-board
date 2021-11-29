@@ -3,10 +3,10 @@ package model
 import "time"
 
 type Post struct {
-	Id         int
-	CommentNum int
-	Txt        string
-	Username   string
-	PostTime   time.Time
-	UpdateTime time.Time
+	Id         int       `json:"id"`
+	CommentNum int       `json:"comment_num"`
+	Txt        string    `json:"txt"`
+	Username   string    `json:"username"`
+	PostTime   time.Time `json:"post_time"`
+	UpdateTime time.Time `json:"update_time"`
 }
