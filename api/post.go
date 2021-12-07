@@ -58,7 +58,7 @@ func briefPosts(ctx *gin.Context) {
 }
 
 func addPost(ctx *gin.Context) {
-	iUsername, _ := ctx.Get("username")
+	iUsername, _ := ctx.Get("username") //从上下文跨中间件取值
 	username := iUsername.(string)
 
 	txt := ctx.PostForm("txt")
@@ -78,4 +78,47 @@ func addPost(ctx *gin.Context) {
 	}
 
 	tool.RespSuccessful(ctx)
+}
+func changePost(ctx *gin.Context) {
+	iUsername, _ := ctx.Get("username") //从上下文跨中间件取值
+	username := iUsername.(string)
+
+	txt := ctx.PostForm("txt")
+
+	post := model.Post{
+		Txt:        txt,
+		Username:   username,
+		PostTime:   time.Now(),
+		UpdateTime: time.Now(),
+	}
+	err := service.ChangePost(post)
+	if err != nil {
+		fmt.Println("change post err: ", err)
+		tool.RespInternalError(ctx)
+		return
+	}
+
+	tool.RespSuccessful(ctx)
+
+}
+
+func deletePost(ctx *gin.Context) {
+	iUsername, _ := ctx.Get("username") //从上下文跨中间件取值
+	username := iUsername.(string)
+
+	post := model.Post{
+		Txt:        "该留言已删除",
+		Username:   username,
+		PostTime:   time.Now(),
+		UpdateTime: time.Now(),
+	}
+	err := service.DeletePost(post)
+	if err != nil {
+		fmt.Println("delete post err: ", err)
+		tool.RespInternalError(ctx)
+		return
+	}
+
+	tool.RespSuccessful(ctx)
+
 }
