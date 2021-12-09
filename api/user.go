@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"message-board/model"
 	"message-board/service"
 	"message-board/tool"
@@ -12,7 +13,7 @@ func changePassword(ctx *gin.Context) {
 	oldPassword := ctx.PostForm("old_password")
 	newPassword := ctx.PostForm("new_password")
 	iUsername, _ := ctx.Get("username")
-	username := iUsername.(string)
+	username := iUsername.(string) //接口断言
 
 	//检验旧密码是否正确
 	flag, err := service.IsPasswordCorrect(username, oldPassword)
@@ -39,9 +40,7 @@ func changePassword(ctx *gin.Context) {
 }
 
 func login(ctx *gin.Context) {
-	username := ctx.PostForm("username")
-	password := ctx.PostForm("password")
-
+	username, password := verify(ctx)
 	flag, err := service.IsPasswordCorrect(username, password)
 	if err != nil {
 		fmt.Println("judge password correct err: ", err)
@@ -59,8 +58,7 @@ func login(ctx *gin.Context) {
 }
 
 func register(ctx *gin.Context) {
-	username := ctx.PostForm("username")
-	password := ctx.PostForm("password")
+	username, password := verify(ctx)
 
 	user := model.User{
 		Username: username,
@@ -87,4 +85,22 @@ func register(ctx *gin.Context) {
 	}
 
 	tool.RespSuccessful(ctx)
+}
+func verify(ctx *gin.Context) (string, string) {
+	validate := validator.New() //创建验证器
+	username := ctx.PostForm("username")
+	err := validate.Struct(username)
+	if err != nil {
+		tool.RespErrorWithDate(ctx, err)
+		return "用户名长度错误", ""
+
+	}
+	password := ctx.PostForm("password")
+	err = validate.Struct(password)
+	if err != nil {
+		tool.RespErrorWithDate(ctx, err)
+		return "", "密码长度错误"
+	}
+	return username, password
+
 }

@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"message-board/model"
 	"message-board/service"
 	"message-board/tool"
@@ -14,7 +15,7 @@ func addComment(ctx *gin.Context) {
 	iUsername, _ := ctx.Get("username")
 	username := iUsername.(string)
 
-	txt := ctx.PostForm("txt")
+	txt := verifyComment(ctx)
 	postIdString := ctx.PostForm("post_id")
 	postId, err := strconv.Atoi(postIdString)
 	if err != nil {
@@ -42,7 +43,7 @@ func amendComment(ctx *gin.Context) {
 	iUsername, _ := ctx.Get("username")
 	username := iUsername.(string)
 
-	txt := ctx.PostForm("txt")
+	txt := verifyComment(ctx)
 	postIdString := ctx.PostForm("post_id")
 	postId, err := strconv.Atoi(postIdString)
 	if err != nil {
@@ -89,4 +90,14 @@ func deleteComment(ctx *gin.Context) {
 		return
 	}
 	tool.RespSuccessful(ctx)
+}
+func verifyComment(ctx *gin.Context) string {
+	validate := validator.New() //创建验证器
+	txt := ctx.PostForm("txt")
+	err := validate.Struct(txt)
+	if err != nil {
+		tool.RespErrorWithDate(ctx, err)
+		return "评论长度错误"
+	}
+	return txt
 }

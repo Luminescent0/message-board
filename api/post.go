@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"message-board/model"
 	"message-board/service"
 	"message-board/tool"
@@ -12,7 +13,7 @@ import (
 )
 
 func postDetail(ctx *gin.Context) {
-	postIdString := ctx.Param("post_id")
+	postIdString := ctx.Param("post_id") //返回url参数的值
 	postId, err := strconv.Atoi(postIdString)
 	if err != nil {
 		fmt.Println("post id string to int err: ", err)
@@ -61,7 +62,7 @@ func addPost(ctx *gin.Context) {
 	iUsername, _ := ctx.Get("username") //从上下文跨中间件取值
 	username := iUsername.(string)
 
-	txt := ctx.PostForm("txt")
+	txt := verifypost(ctx)
 
 	post := model.Post{
 		Txt:        txt,
@@ -83,7 +84,7 @@ func changePost(ctx *gin.Context) {
 	iUsername, _ := ctx.Get("username") //从上下文跨中间件取值
 	username := iUsername.(string)
 
-	txt := ctx.PostForm("txt")
+	txt := verifypost(ctx)
 
 	post := model.Post{
 		Txt:        txt,
@@ -121,4 +122,14 @@ func deletePost(ctx *gin.Context) {
 
 	tool.RespSuccessful(ctx)
 
+}
+func verifypost(ctx *gin.Context) string {
+	validate := validator.New() //创建验证器
+	txt := ctx.PostForm("txt")
+	err := validate.Struct(txt)
+	if err != nil {
+		tool.RespErrorWithDate(ctx, err)
+		return "留言长度错误"
+	}
+	return txt
 }
