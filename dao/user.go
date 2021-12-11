@@ -2,8 +2,11 @@ package dao
 
 import (
 	"errors"
+	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 	"message-board/model"
+	"os"
+	"time"
 )
 
 func UpdatePassword(username, newPassword string) error {
@@ -74,3 +77,21 @@ type Bcrypt struct {
 func (b *Bcrypt) Make(password []byte) ([]byte, error) {
 	return bcrypt.GenerateFromPassword(password, b.cost)
 }
+
+func CreateToken(username string) (string, error) {
+	err := os.Setenv("ACCESS_SECRET", "yep") //env 文件
+	if err != nil {
+		return "", err
+	}
+	atClaims := jwt.MapClaims{}
+	atClaims["authorized"] = true
+	atClaims["username"] = username
+	atClaims["exp"] = time.Now().Add(time.Minute * 15).Unix() //将token设为仅15分钟有效，
+	// 在此之后token无效并不能用于任何经过身份验证的请求
+	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
+	token, err := at.SignedString([]byte(os.Getenv("ACCESS_SECRET")))
+	if err != nil {
+		return "", err
+	}
+	return token, nil
+} //使用从环境变量（setenv）中获取的密码签署jwt

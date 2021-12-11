@@ -5,7 +5,7 @@ import "time"
 type Post struct {
 	Id         int       `json:"id"`
 	CommentNum int       `json:"comment_num"`
-	Txt        string    `json:"txt"`
+	Txt        string    `json:"txt" validate:"max=300"`
 	Username   string    `json:"username"`
 	PostTime   time.Time `json:"post_time"`
 	UpdateTime time.Time `json:"update_time"`

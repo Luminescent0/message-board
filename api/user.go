@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"message-board/dao"
 	"message-board/model"
 	"message-board/service"
 	"message-board/tool"
+	"net/http"
 )
 
 func changePassword(ctx *gin.Context) {
@@ -52,6 +54,13 @@ func login(ctx *gin.Context) {
 		tool.RespErrorWithDate(ctx, "密码错误")
 		return
 	}
+	//jwt
+	token, err := dao.CreateToken(username) //用户名传入CreateToken,生成jwt时用作声明
+	if err != nil {
+		ctx.JSON(http.StatusUnprocessableEntity, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, token)
 
 	ctx.SetCookie("username", username, 600, "/", "", false, false)
 	tool.RespSuccessful(ctx)
@@ -64,7 +73,7 @@ func register(ctx *gin.Context) {
 		Username: username,
 		Password: password,
 	}
-
+	fmt.Println(user)
 	flag, err := service.IsRepeatUsername(username)
 	if err != nil {
 		fmt.Println("judge repeat username err: ", err)

@@ -17,8 +17,9 @@ func InitEngine() {
 	postGroup := engine.Group("/post")
 	{
 		postGroup.Use(auth)
-		postGroup.POST("/", addPost) //发布新留言
-		postGroup.POST("/:post_id")  //修改留言
+		postGroup.POST("/", addPost)              //发布新留言
+		postGroup.POST("/:post_id", changePost)   //修改留言
+		postGroup.DELETE("/:post_id", deletePost) //删除留言。（用提示语覆写了
 
 		postGroup.GET("/", briefPosts)         //查看全部留言概略
 		postGroup.GET("/:post_id", postDetail) //查看一条留言详细信息和其下属评论
@@ -27,9 +28,13 @@ func InitEngine() {
 	commentGroup := engine.Group("/comment")
 	{
 		commentGroup.Use(auth)
-		commentGroup.POST("/", addComment)  //发送评论
-		commentGroup.DELETE("/:comment_id") //删除评论
+		commentGroup.POST("/", addComment)                 //发送评论
+		commentGroup.POST("/:comment_id", amendComment)    //发布评论
+		commentGroup.DELETE("/:comment_id", deleteComment) //删除评论
 	}
 
-	engine.Run()
+	err := engine.Run()
+	if err != nil {
+		return
+	}
 }

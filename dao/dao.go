@@ -8,10 +8,10 @@ import (
 var dB *sql.DB
 
 func InitDB() {
-	db, err := sql.Open("mysql", "root:123456@tcp(localhost:3306)/message_board?charset=utf8mb4&parseTime=True")
+	db, err := sql.Open("mysql", "root:xianye@tcp(localhost)/db1")
 	if err != nil {
 		panic(err)
 	}
 
 	dB = db
-}
+} //准备数据库抽象

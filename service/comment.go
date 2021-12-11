@@ -12,3 +12,7 @@ func AddComment(comment model.Comment) error {
 func GetPostComments(postId int) ([]model.Comment, error) {
 	return dao.SelectCommentByPostId(postId)
 }
+
+func AmendComment(comment model.Comment) error {
+	return dao.AmendComment(comment)
+}

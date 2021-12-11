@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	_ "github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"message-board/model"
 	"message-board/service"

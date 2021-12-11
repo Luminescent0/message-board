@@ -14,7 +14,7 @@ func ChangePassword(username, newPassword string) error {
 func IsPasswordCorrect(username, password string) (bool, error) {
 	user, err := dao.SelectUserByUsername(username)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == sql.ErrNoRows { //用户名不存在
 			return false, nil
 		}
 
@@ -28,21 +28,25 @@ func IsPasswordCorrect(username, password string) (bool, error) {
 	return true, nil
 }
 
-//判断用户名是否重复
+// IsRepeatUsername 判断用户名是否重复
 func IsRepeatUsername(username string) (bool, error) {
 	_, err := dao.SelectUserByUsername(username)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == sql.ErrNoRows { //没有匹配查询的行
 			return false, nil
 		}
 
-		return false, err
+		return false, err //查询失败
 	}
 
-	return true, nil
+	return true, nil //用户已存在
 }
 
 func Register(user model.User) error {
-	err := dao.InsertUser(user)
+	err := dao.Cipher(user)
+	if err != nil {
+		return err
+	}
+	err = dao.InsertUser(user)
 	return err
 }
